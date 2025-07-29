@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Math Is Hell</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Game Structure -->
+    <div id="game-container">
+        <div id="game-area">
+            <canvas id="fireCanvas"></canvas>
+            <canvas id="gameCanvas"></canvas>
+            <div id="narrator-container">
+                <span id="narrator-face" class="emoji">😉</span>
+                <span id="narrator-body" class="emoji">👔</span>
+                <span id="narrator-thumbs" class="emoji">👍</span>
+            </div>
+            <div id="voiceover-text"></div>
+            <div id="boss-container">
+                <span id="boss-face" class="emoji">👿</span>
+                <span id="boss-body" class="emoji">👔</span>
+                <span id="boss-mug" class="emoji">☕️</span>
+            </div>
+            <div id="ui-overlay">
+                <div id="game-header">
+                    <div id="score-display">Score: 0</div>
+                    <div id="level-display">Level: 1</div>
+                    <div id="settings-btn">⚙️</div>
+                </div>
+            </div>
+        </div>
+        <div id="bottom-ui">
+            <div id="problem-display"></div>
+            <div id="keypad">
+                <button class="keypad-btn" data-value="7">7</button>
+                <button class="keypad-btn" data-value="8">8</button>
+                <button class="keypad-btn" data-value="9">9</button>
+                <button class="keypad-btn" data-value="4">4</button>
+                <button class="keypad-btn" data-value="5">5</button>
+                <button class="keypad-btn" data-value="6">6</button>
+                <button class="keypad-btn" data-value="1">1</button>
+                <button class="keypad-btn" data-value="2">2</button>
+                <button class="keypad-btn" data-value="3">3</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modals -->
+    <div id="startScreen" class="modal">
+        <h1 class="modal-title">Math Is Hell</h1>
+        <p>A js13k adventure. Use keyboard (1-9) or mouse. Click "Enter Hell" for the full experience, or "Skip Intro" to begin immediately.</p>
+        <div>
+            <button id="start-btn" class="modal-btn">ENTER HELL</button>
+            <button id="skip-btn" class="modal-btn" style="background: #555;">SKIP INTRO</button>
+        </div>
+    </div>
+    <div id="pauseScreen" class="modal">
+        <h1 class="modal-title">Paused</h1>
+        <p>The horrors wait for you.</p>
+        <div class="settings-group">
+            <label for="volumeSlider">Volume:</label>
+            <input type="range" id="volumeSlider" min="0" max="100" value="30">
+        </div>
+        <button id="resume-btn" class="modal-btn">RESUME</button>
+    </div>
+    <div id="gameOverScreen" class="modal">
+        <h1 class="modal-title">You Have Perished</h1>
+        <p>Your soul is forfeit. Final Score: <span id="finalScore">0</span></p>
+        <button id="reset-btn" class="modal-btn">TRY AGAIN</button>
+    </div>
+
+    <!-- The order of these scripts is important -->
+    <script src="utils.js" type="module"></script>
+    <script src="effects.js" type="module"></script>
+    <script src="enemies.js" type="module"></script>
+    <script src="intro.js" type="module"></script>
+    <script src="input.js" type="module"></script>
+    <script src="game.js" type="module"></script>
+</body>
+</html>
