@@ -1,4 +1,4 @@
-// effects.js - Handles the WebGL background fire effect.
+// effects.js - Handles ONLY the WebGL background fire effect.
 
 let gl, webgl;
 
@@ -12,7 +12,6 @@ export function initWebGL(canvas) {
 
     const isWebGL2 = gl instanceof WebGL2RenderingContext;
     
-    // Shader for WebGL2 and WebGL1. The syntax is compatible.
     const vertexShaderSource = `
         attribute vec2 a_position;
         void main() {
@@ -66,7 +65,10 @@ export function initWebGL(canvas) {
     const vs = createShader(gl.VERTEX_SHADER, vertexShaderSource);
     const fs = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
     
+    if (!vs || !fs) return;
     webgl.program = createProgram(vs, fs);
+    if (!webgl.program) return;
+
     webgl.resUni = gl.getUniformLocation(webgl.program, 'u_resolution');
     webgl.timeUni = gl.getUniformLocation(webgl.program, 'u_time');
     
