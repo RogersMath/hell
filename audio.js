@@ -18,7 +18,7 @@ export function initAudio() {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
         masterGain = audioContext.createGain();
-        masterGain.gain.value = 0.3;
+        masterGain.gain.value = 0.3; // Default volume
         masterGain.connect(audioContext.destination);
 
         document.getElementById('volumeSlider').addEventListener('input', e => {
