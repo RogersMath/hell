@@ -1,3 +1,5 @@
+// intro.js - Manages the opening cinematic sequence.
+
 export function startOpening(game) {
     game.elements.startScreen.style.display = 'none';
     game.state.phase = 'opening';
@@ -59,7 +61,8 @@ function transformToEvil(game) {
         game.elements.narratorThumbs.style.transition = 'none';
         game.elements.narratorFace.textContent = '😠'; 
         game.elements.narratorThumbs.textContent = '👎';
-        game.elements.narratorFace.offsetHeight; // Force reflow
-        game.elements.narratorThumbs.offsetHeight;
+        // Force a reflow to apply style changes immediately before re-enabling transitions
+        void game.elements.narratorFace.offsetWidth;
+        void game.elements.narratorThumbs.offsetWidth;
     }, 500);
 }
