@@ -1,7 +1,12 @@
+// game.js - Main game controller with corrected module imports.
+
 import { DOM_ELEMENTS, resizeAll } from './utils.js';
 import { initInput } from './input.js';
 import { startOpening, updateOpening } from './intro.js';
-import { initWebGL, renderWebGL, playBackgroundMusic, initAudio, playTone } from './effects.js';
+// CORRECTED: Importing ONLY visual effects from effects.js
+import { initWebGL, renderWebGL } from './effects.js'; 
+// CORRECTED: Importing ALL audio functions from audio.js
+import { initAudio, playBackgroundMusic, playTone } from './audio.js';
 import { updateEnemies, spawnBoss, updateBoss, drawEnemies, fireProjectile, updateProjectiles, drawProjectiles } from './enemies.js';
 
 class Game {
@@ -18,16 +23,15 @@ class Game {
         this.elements = DOM_ELEMENTS;
         this.ctx = this.elements.gameCanvas.getContext('2d');
         this.gameLoop = this.gameLoop.bind(this);
-        this.lastAnswerTime = 0;
         this.audioInitialized = false;
     }
 
     init() {
         this.state = { phase: 'menu', animationFrameId: null };
         initWebGL(this.elements.fireCanvas);
-        resizeAll(this.elements);
-        window.addEventListener('resize', () => resizeAll(this.elements));
-        initInput(this);
+        resizeAll();
+        window.addEventListener('resize', resizeAll);
+        initInput(this); // Pass the game instance to the input handler
         
         this.state.animationFrameId = requestAnimationFrame(this.gameLoop);
     }
@@ -63,27 +67,26 @@ class Game {
             bossActive: false, bossObject: null
         };
         this.updateUI();
-        fireProjectile(this, true); // This will call generateProblem
+        fireProjectile(this, true); // Generate the first problem
     }
 
     gameLoop(time) {
-        const deltaTime = time - (this.state.lastTime || time);
-        
+        // Always render the background
         renderWebGL(time);
         
+        // Stop the loop if we are in a terminal state
         if (this.state.phase === 'gameOver' || this.state.phase === 'menu') {
-            this.state.lastTime = time;
             requestAnimationFrame(this.gameLoop);
             return;
         }
+
+        const deltaTime = time - (this.state.lastTime || time);
         
         if (this.state.phase === 'opening') {
             updateOpening(this, time);
-        } else if (this.state.phase === 'playing') {
-            if (!this.state.paused) {
-                this.updatePlaying(time, deltaTime);
-                this.draw();
-            }
+        } else if (this.state.phase === 'playing' && !this.state.paused) {
+            this.updatePlaying(time, deltaTime);
+            this.draw();
         }
         
         this.state.lastTime = time;
@@ -144,6 +147,7 @@ class Game {
     }
 }
 
+// Entry point for the application
 document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
     game.init();
