@@ -4,13 +4,16 @@ import { generateSong } from './sonantx.js';
 
 let audioContext;
 let masterGain;
+let musicBufferSource = null;
 
-/**
- * Initializes the Web Audio API context. Must be called after a user interaction.
- * This function no longer starts the music automatically.
- */
 export function initAudio() {
-    if (audioContext) return; // Prevent re-initialization
+    if (audioContext) {
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        return;
+    } 
+    
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -31,15 +34,11 @@ export function initAudio() {
     }
 }
 
-/**
- * Fetches, generates, and plays the looping background music.
- * CRITICAL FIX: The 'export' keyword makes this function available to other files like main.js.
- */
 export async function playBackgroundMusic() {
-    if (!audioContext) {
-        console.error("Audio not initialized. Cannot play music.");
+    if (!audioContext || musicBufferSource) {
         return;
     }
+    
     try {
         const response = await fetch('music.json');
         if (!response.ok) {
@@ -49,11 +48,11 @@ export async function playBackgroundMusic() {
         
         const buffer = await generateSong(songData, audioContext.sampleRate);
         
-        const bufferSource = audioContext.createBufferSource();
-        bufferSource.buffer = buffer;
-        bufferSource.loop = true;
-        bufferSource.connect(masterGain);
-        bufferSource.start();
+        musicBufferSource = audioContext.createBufferSource();
+        musicBufferSource.buffer = buffer;
+        musicBufferSource.loop = true;
+        musicBufferSource.connect(masterGain);
+        musicBufferSource.start();
         console.log("Background music started.");
 
     } catch (e) {
@@ -61,14 +60,12 @@ export async function playBackgroundMusic() {
     }
 }
 
-/**
- * Plays a simple procedural sound tone.
- * @param {number} freq The frequency of the tone in Hz.
- * @param {number} dur The duration of the tone in seconds.
- * @param {string} type The oscillator type ('sine', 'square', 'sawtooth', 'triangle').
- */
 export function playTone(freq, dur, type) {
     if (!audioContext || !masterGain) return;
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
 
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
@@ -79,7 +76,6 @@ export function playTone(freq, dur, type) {
     osc.type = type;
     osc.frequency.setValueAtTime(freq, audioContext.currentTime);
     
-    // Simple ADSR-like envelope
     gain.gain.setValueAtTime(0, audioContext.currentTime);
     gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.01);
     gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + dur);
