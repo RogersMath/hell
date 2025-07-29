@@ -1,5 +1,5 @@
 import { lerp } from './utils.js';
-import { playTone } from './effects.js';
+import { playTone } from './audio.js';
 
 // --- ENEMY LOGIC ---
 export function spawnEnemy(game) { 
@@ -192,6 +192,7 @@ function generateProblem(game) {
         p = (r > 0 && r < 10) ? { t: `${a}×${b} - ${c}`, a: r } : generateProblem(game); 
     } 
     if (!p || !p.t) { 
+        // This is a recursive call, ensure it has a base case (which it does via the random generation)
         generateProblem(game); 
         return; 
     } 
