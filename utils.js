@@ -1,3 +1,5 @@
+// utils.js - Shared constants and helper functions.
+
 // --- DOM Element Cache ---
 export const DOM_ELEMENTS = {
     fireCanvas: document.getElementById('fireCanvas'), 
@@ -25,10 +27,10 @@ export const DOM_ELEMENTS = {
 };
 
 // --- Helper Functions ---
-export function resizeAll(elements) { 
+export function resizeAll() { 
     const dpr = window.devicePixelRatio || 1; 
-    const rect = elements.gameCanvas.getBoundingClientRect(); 
-    [elements.gameCanvas, elements.fireCanvas].forEach(c => { 
+    const rect = DOM_ELEMENTS.gameCanvas.getBoundingClientRect(); 
+    [DOM_ELEMENTS.gameCanvas, DOM_ELEMENTS.fireCanvas].forEach(c => { 
         c.width = rect.width * dpr; 
         c.height = rect.height * dpr; 
     }); 
